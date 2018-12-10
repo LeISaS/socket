@@ -52,7 +52,10 @@ int main(int argc, char *argv[])
 		ErrorHandling("connect() error!");
 	else
 		puts("서버에 연결되었습니다.\n");
-	int M_input, P_input;
+	int M_input;
+	const int Enter = 13;
+	bool EnterCheck = true;
+	int LottoNum,Lotto_temp;
 	printf("로또 시뮬레이션\n");
 	printf("---------Menu----------\n");
 	printf("1.자동배치\n");
@@ -78,8 +81,24 @@ int main(int argc, char *argv[])
 
 			printf("로또 번호 생성 완료\n");
 			printf("엔터키를 눌러주세요 !\n");
-			getchar();
+			//enter
+			if (EnterCheck == true)
+			{
+				for (int i = 0; i < 7; i++)
+				{
+					int boolOne = 1;
+					send(hSocket, (char*)&boolOne, sizeof(boolOne), 0);
+					getchar();
+					send(hSocket, (char*)&Enter, sizeof(Enter), 0);
+					
+					LottoNum = recv(hSocket, (char *)&Lotto_temp, sizeof(Lotto_temp), 0);
+					printf("%d번째 추첨 번호 : %d", i + 1, Lotto_temp);
+				}
+				EnterCheck = false;
+			}
+			break;
 		}
+		
 		else if (M_input == 2)	//수동배치
 		{
 			system("cls");
@@ -110,7 +129,7 @@ void ErrorHandling(char * message)
 void LottoShuffle()
 {
 	int num1, num2, temp;
-	
+	int Number_Lotto[45] = {};
 	for (int i = 0; i < 45; i++)
 	{
 		Number_Lotto[i] = i + 1;
@@ -143,7 +162,8 @@ void LottoShuffle()
 	for (int i = 0; i < 6; i++)
 	{
 		printf("%d\t", Number_Lotto[i]);
-		send(hSocket, (char*)&Number_Lotto[i], sizeof(Number_Lotto[i]), 0);
+		Sleep(20);
+		//send(hSocket, (char*)&Number_Lotto[i], sizeof(Number_Lotto[i]), 0);
 	}
 	printf("\n");
 }
