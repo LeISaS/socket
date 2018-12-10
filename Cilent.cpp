@@ -7,7 +7,14 @@
 #include<WinSock2.h>
 #include<iostream>
 #include<time.h>
-
+/* Linux
+#include<sys/socket.h>
+#include<arpa.inet.h>
+#include<sys/stat.h>
+#include<stdio.h>
+#include<string.h>
+#include<unistd.h>
+*/
 #define BUF_SIZE 1024
 void LottoShuffle();
 using namespace std;
@@ -47,43 +54,46 @@ int main(int argc, char *argv[])
 		puts("서버에 연결되었습니다.\n");
 
 	int M_input, P_input;
-	cout << "로또 시뮬레이션" << endl;
-	cout << "---------Menu----------" << endl;
-	cout << "1.자동배치" << endl;
-	cout << "2.수동배치" << endl;
-	cout << "-----------------------" << endl;
-
-	cout << "입력:";
-	cin >> M_input;
 	
-	send(hSocket, (char*)M_input, sizeof(M_input), 0);
+	printf("로또 시뮬레이션\n");
+	printf("---------Menu----------\n");
+	printf("1.자동배치\n");
+	printf("2.수동배치\n");
+	printf("-----------------------\n");
+
+	printf("입력: \n");
+	scanf("%d", &M_input);
+	
+	send(hSocket, (const char*)M_input, sizeof(M_input), 0);
 
 	
-	while(1)
+ 	while(1)
 	{
 		if (M_input == 1)		//자동배치
 		{
 			system("cls");
-			cout << "자동으로 로또 숫자를 배치합니다." << endl;
+			printf("자동으로 로또 숫자를 배치합니다.\n");
 
 			for (int i = 0; i < 5; i++)
 			{
 				LottoShuffle();
 			}
-			cout << "로또 번호 생성 완료" << endl;
-			cout << "엔터키를 눌러주세요 !" << endl;
+
+			printf("로또 번호 생성 완료\n");
+			printf("엔터키를 눌러주세요 !\n");
 			getchar();
 		}
 		else if (M_input == 2)	//수동배치
 		{
 			system("cls");
-			cout << "로또 숫자를 배치하세요 !!" << endl;
+			printf("로또 숫자를 배치하세요 !!\n");
 		}
 		else	//그외의 숫자들
 		{
-			cout << "숫자를 잘못 입력하셨습니다." << endl;
-			cout << "입력:";
-			cin >> M_input;
+			printf("숫자를 잘못 입력하셨습니다.\n");
+			printf("입력: \n");
+			scanf("%d", &M_input);
+
 		}
 	}
 
@@ -135,8 +145,8 @@ void LottoShuffle()
 	}
 	for (int i = 0; i < 6; i++)
 	{
-		cout <<Number_Lotto[i]<<"\t";
+		printf("%d\t", Number_Lotto[i]);
 		//send(hSocket, (char*)Number_Lotto[i], sizeof(Number_Lotto[i]), 0);
 	}
-	cout << endl;
+	printf("\n");
 }

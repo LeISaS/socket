@@ -7,10 +7,19 @@
 #include <winsock2.h>
 #include<iostream>
 
+/* Linux
+#include<sys/socket.h>
+#include<arpa.inet.h>
+#include<sys/stat.h>
+#include<stdio.h>
+#include<string.h>
+#include<unistd.h>
+*/
+
 #define BUF_SIZE 1024
 using namespace std;
 void ErrorHandling(char *message);
-int recvn(SOCKET s, char *buf, int len, int flags);
+
 int main(int argc, char *argv[])
 {
 	WSADATA wsaData;
@@ -58,17 +67,14 @@ int main(int argc, char *argv[])
 		
 		while (1)
 		{
-			len = recvn(hClntSock, M_input, BUF_SIZE, 0);
+			len = recv(hClntSock, M_input, BUF_SIZE, 0);
 			if (len == SOCKET_ERROR)
 			{
 				printf("수신()에러\n");
 			}
-			else
-			{
-				printf("수신성공");
-				M_input[len] = '\0';
-				printf("클라이언트에서 %d번 입력했습니다.", M_input);
-			}
+		
+			M_input[len] = '\0';
+			printf("클라이언트에서 %c번 입력했습니다.", M_input);
 		}
 		
 		
@@ -83,23 +89,4 @@ void ErrorHandling(char *message)
 	fputs(message, stderr);
 	fputc('\n', stderr);
 	exit(1);
-}
-
-int recvn(SOCKET s, char *buf, int len, int flags)
-{
-	int received;
-	char *ptr = buf;
-	int left = len;
-	
-	while (left > 0)
-	{
-		received = recv(s, ptr, left, flags);
-		if (received == SOCKET_ERROR)
-			return SOCKET_ERROR;
-		else if (received == 0)
-			break;
-		left -= received;
-		ptr += received;
-	}
-	return (len - left);
 }
