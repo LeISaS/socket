@@ -62,19 +62,29 @@ int main(int argc, char *argv[])
 			printf("Connected client \n");
 	
 		char M_input[BUF_SIZE];
-		int len;
+		int len,len1;
+		int temp,temp1;
 	//Logic
 		
-		while (1)
+		len = recv(hClntSock, (char *)&temp, sizeof(temp), 0);
+		if (len == SOCKET_ERROR)
 		{
-			len = recv(hClntSock, M_input, BUF_SIZE, 0);
-			if (len == SOCKET_ERROR)
-			{
-				printf("수신()에러\n");
-			}
+			printf("수신()에러\n");
+		}
 		
-			M_input[len] = '\0';
-			printf("클라이언트에서 %c번 입력했습니다.", M_input);
+		if (temp == 1)
+		{
+			printf("클라이언트에서 %d번 입력했습니다.\n", temp);
+			printf("자동배치를 완료했습니다.\n");
+			printf("숫자추첨을 시작합니다.\n");
+		}
+		else if (temp == 2)
+		{
+			printf("클라이언트에서 %d번 입력했습니다.\n", temp);
+		}
+		else
+		{
+			printf("메뉴에 없는 숫자를 입력했습니다..\n");
 		}
 		
 		

@@ -52,19 +52,16 @@ int main(int argc, char *argv[])
 		ErrorHandling("connect() error!");
 	else
 		puts("서버에 연결되었습니다.\n");
-
 	int M_input, P_input;
-	
 	printf("로또 시뮬레이션\n");
 	printf("---------Menu----------\n");
 	printf("1.자동배치\n");
 	printf("2.수동배치\n");
 	printf("-----------------------\n");
 
-	printf("입력: \n");
+	printf("입력:");
 	scanf("%d", &M_input);
-	
-	send(hSocket, (const char*)M_input, sizeof(M_input), 0);
+	send(hSocket, (char*)&M_input, sizeof(M_input), 0);
 
 	
  	while(1)
@@ -93,7 +90,7 @@ int main(int argc, char *argv[])
 			printf("숫자를 잘못 입력하셨습니다.\n");
 			printf("입력: \n");
 			scanf("%d", &M_input);
-
+			send(hSocket, (char*)&M_input, sizeof(M_input), 0);
 		}
 	}
 
@@ -146,7 +143,7 @@ void LottoShuffle()
 	for (int i = 0; i < 6; i++)
 	{
 		printf("%d\t", Number_Lotto[i]);
-		//send(hSocket, (char*)Number_Lotto[i], sizeof(Number_Lotto[i]), 0);
+		send(hSocket, (char*)&Number_Lotto[i], sizeof(Number_Lotto[i]), 0);
 	}
 	printf("\n");
 }
