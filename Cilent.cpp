@@ -24,7 +24,7 @@ WSADATA wsaData;
 SOCKET hSocket;
 void AutoLotto();
 void LottoPrn();
-int Lotto1[7], Lotto2[7], Lotto3[7], Lotto4[7], Lotto5[7];
+int Lotto1[8] = {}, Lotto2[8] = {}, Lotto3[8] = {}, Lotto4[8] = {}, Lotto5[8] = {};
 int main(int argc, char *argv[])
 {
 	srand((unsigned)time(NULL));
@@ -57,6 +57,8 @@ int main(int argc, char *argv[])
 	const int Enter = 13;
 	bool EnterCheck = true;
 	int LottoNum,Lotto_temp;
+	int LottoCount1 = 0, LottoCount2 = 0, LottoCount3 = 0, LottoCount4 = 0, LottoCount5 = 0;
+	int arrayCount = 0;
 	printf("로또 시뮬레이션\n");
 	printf("---------Menu----------\n");
 	printf("1.자동배치\n");
@@ -76,15 +78,13 @@ int main(int argc, char *argv[])
 
 			AutoLotto();
 			
-
 			printf("로또 번호 생성 완료\n");
 			printf("엔터키를 눌러주세요 !\n");
 			//enter
 			if (EnterCheck == true)
 			{
 				for (int i = 0; i < 7; i++)
-				{
-	
+				{					
 					LottoPrn();
 
 					int boolOne = 1;
@@ -97,6 +97,7 @@ int main(int argc, char *argv[])
 					Lotto_ins[i] = Lotto_temp;
 					if (i == 6)
 					{
+						arrayCount = Lotto_temp;
 						system("cls");
 						printf("\n보너스 추첨 번호 : %d\n", Lotto_temp);
 						
@@ -113,33 +114,75 @@ int main(int argc, char *argv[])
 						
 					}
 
-					for (int j = 0; j < 6; j++)
+					/*start count*/
+					for (int j = 0; j < 7; j++)
 					{
 						if (Lotto_temp == Lotto1[j])
 						{
 							Lotto1[6]++;
+							LottoCount1++;
+							if (arrayCount == Lotto1[j])
+							{
+								Lotto1[6]--;
+								Lotto1[7]++;
+							}
 						}
 						if (Lotto_temp == Lotto2[j])
 						{
 							Lotto2[6]++;
+							LottoCount2++;
+							if (arrayCount == Lotto2[j])
+							{
+								Lotto2[6]--;
+								Lotto2[7]++;
+							}
 						}
 						if (Lotto_temp == Lotto3[j])
 						{
 							Lotto3[6]++;
+							LottoCount3++;
+							if (arrayCount == Lotto3[j])
+							{
+								Lotto3[6]--;
+								Lotto3[7]++;
+							}
 						}
 						if (Lotto_temp == Lotto4[j])
 						{
 							Lotto4[6]++;
+							LottoCount4++;
+							if (arrayCount == Lotto4[j])
+							{
+								Lotto4[6]--;
+								Lotto4[7]++;
+							}
 						}
 						if (Lotto_temp == Lotto5[j])
 						{
 							Lotto5[6]++;
+							LottoCount5++;
+							if (arrayCount == Lotto5[j])
+							{
+								Lotto5[6]--;
+								Lotto5[7]++;
+							}
 						}
 					}
+					/*end count*/
 				}
+				//send(hSocket, (char*)&LottoCount1, sizeof(LottoCount1), 0);
 				LottoPrn();
+				printf("A. 당첨 개수 : %d개\n", LottoCount1);
+				printf("B. 당첨 개수 : %d개\n", LottoCount2);
+				printf("C. 당첨 개수 : %d개\n", LottoCount3);
+				printf("D. 당첨 개수 : %d개\n", LottoCount4);
+				printf("E. 당첨 개수 : %d개\n", LottoCount5);
+				
 				EnterCheck = false;
 			}
+			
+			//등수 추첨
+			//send(hSocket, (char*)&Number_Lotto[i], sizeof(Number_Lotto[i]), 0);
 			break;
 		}
 		
@@ -203,8 +246,9 @@ void LottoShuffle(int Number_Lotto[45])
 			}
 		}
 	}
-	for (int i = 0; i < 6; i++)
+	for (int i = 0; i < 7; i++)
 	{
+		Number_Lotto[7] = 0;
 		Number_Lotto[6] = 0;
 		printf("%d\t", Number_Lotto[i]);
 		Sleep(20);
@@ -216,30 +260,27 @@ void LottoPrn()
 {
 	printf("\n");
 	printf("A :\t");
-	for (int i = 0; i < 6; i++)
+	//Lotto Prn
+	for (int i = 0; i < 8; i++)
 		printf("%d\t", Lotto1[i]);
 	printf("\n");
 	printf("B :\t");
-	for (int i = 0; i < 6; i++)
+	for (int i = 0; i < 8; i++)
 		printf("%d\t", Lotto2[i]);
 	printf("\n");
 	printf("C :\t");
-	for (int i = 0; i < 6; i++)
+	for (int i = 0; i < 8; i++)
 		printf("%d\t", Lotto3[i]);
 	printf("\n");
 	printf("D :\t");
-	for (int i = 0; i < 6; i++)
+	for (int i = 0; i < 8; i++)
 		printf("%d\t", Lotto4[i]);
 	printf("\n");
 	printf("E :\t");
-	for (int i = 0; i < 6; i++)
+	for (int i = 0; i < 8 ; i++)
 		printf("%d\t", Lotto5[i]);
 	printf("\n\n");
-	printf("A. 당첨 횟수 : %d\n", Lotto1[6]);
-	printf("B. 당첨 횟수 : %d\n", Lotto2[6]);
-	printf("C. 당첨 횟수 : %d\n", Lotto3[6]);
-	printf("D. 당첨 횟수 : %d\n", Lotto4[6]);
-	printf("E. 당첨 횟수 : %d\n", Lotto5[6]);
+
 }
 void AutoLotto()
 {

@@ -67,13 +67,16 @@ int main(int argc, char *argv[])
 		int temp,Enter_temp;
 		int boolOne, booltemp;
 		int boolTwo=1;
+		int Count1, Count2, Count3, Count4, Count5;
+		int Count_temp1, Count_temp2, Count_temp3, Count_temp4, Count_temp5;
+		
 	//Logic
 		while (1)
 		{
 			len = recv(hClntSock, (char *)&temp, sizeof(temp), 0);
 			if (len == SOCKET_ERROR)
 			{
-				printf("수신()에러\n");
+				printf("프로그램을 종료합니다.\n");
 				break;
 			}
 			//자동배치
@@ -100,7 +103,13 @@ int main(int argc, char *argv[])
 						continue;
 				}
 				printf("번호 추첨끝 등수확인을 합니다.\n");
-				send(hClntSock, (char*)&boolTwo, sizeof(boolTwo), 0);
+				/*for (int i = 0; i < 5; i++)
+				{
+					Count1 = recv(hClntSock, (char*)&Count_temp1, sizeof(Count_temp1), 0);
+					printf("%d", Count1);
+				}*/
+				//send(hClntSock, (char*)&boolTwo, sizeof(boolTwo), 0);
+				
 			}
 			//수동배치
 			else if (temp == 2)
@@ -144,11 +153,9 @@ void LottoShuffle()
 		Number_Lotto[num1] = Number_Lotto[num2];
 		Number_Lotto[num2] = temp;
 	}
-
-	//정렬
-	for (int i = 0; i < 7; i++)
+	for (int i = 0; i < 6; i++)
 	{
-		for (int j = 0; j < 7; j++)
+		for (int j = 0; j < 6; j++)
 		{
 			if (Number_Lotto[i] < Number_Lotto[j])
 			{
@@ -158,10 +165,16 @@ void LottoShuffle()
 			}
 		}
 	}
+
 	for (int i = 0; i < 7; i++)
 	{
 		Sleep(20);
 		send(hClntSock, (char*)&Number_Lotto[i], sizeof(Number_Lotto[i]), 0);
 	}
 	printf("\n");
+}
+
+void Lottograde(int Number)
+{
+
 }
