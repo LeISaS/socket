@@ -90,11 +90,11 @@ int main(int argc, char *argv[])
 				//enter
 				for (int i = 0; i < 7; i++)
 				{
-					boolOne = recv(hClntSock, (char *)&booltemp, sizeof(booltemp), 0);
+					recv(hClntSock, (char *)&booltemp, sizeof(booltemp), 0);
 					if (booltemp == 1)
 					{
-						Enter = recv(hClntSock, (char *)&Enter_temp, sizeof(Enter_temp), 0);
-						printf("%d...클라이언트로부터 엔터를 입력받았습니다.%c\n", i+1,Enter);
+						recv(hClntSock, (char *)&Enter_temp, sizeof(Enter_temp), 0);
+						printf("%d...클라이언트로부터 엔터를 입력받았습니다.%c\n", i+1,Enter_temp);
 						printf("추첨된 번호를 클라이언트로 보냈습니다.\n");
 						LottoShuffle();
 						
@@ -102,14 +102,8 @@ int main(int argc, char *argv[])
 					else
 						continue;
 				}
-				printf("번호 추첨끝 등수확인을 합니다.\n");
-				/*for (int i = 0; i < 5; i++)
-				{
-					Count1 = recv(hClntSock, (char*)&Count_temp1, sizeof(Count_temp1), 0);
-					printf("%d", Count1);
-				}*/
-				//send(hClntSock, (char*)&boolTwo, sizeof(boolTwo), 0);
-				
+				printf("번호 추첨끝 클라이언트에서 등수확인을 합니다.\n");
+				Sleep(1000);
 			}
 			//수동배치
 			else if (temp == 2)

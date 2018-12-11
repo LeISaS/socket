@@ -24,6 +24,7 @@ WSADATA wsaData;
 SOCKET hSocket;
 void AutoLotto();
 void LottoPrn();
+void LottoGrade(int LottoNuber, int Bonus);
 int Lotto1[8] = {}, Lotto2[8] = {}, Lotto3[8] = {}, Lotto4[8] = {}, Lotto5[8] = {};
 int main(int argc, char *argv[])
 {
@@ -71,7 +72,8 @@ int main(int argc, char *argv[])
 	int Lotto_ins[7] = {};
  	while(1)
 	{
-		if (M_input == 1)		//자동배치
+		//자동 
+		if (M_input == 1)		
 		{
 			system("cls");
 			printf("자동으로 로또 숫자를 배치합니다.\n");
@@ -93,7 +95,7 @@ int main(int argc, char *argv[])
 					getchar();
 					send(hSocket, (char*)&Enter, sizeof(Enter), 0);
 					
-					LottoNum = recv(hSocket, (char *)&Lotto_temp, sizeof(Lotto_temp), 0);
+					recv(hSocket, (char *)&Lotto_temp, sizeof(Lotto_temp), 0);
 					Lotto_ins[i] = Lotto_temp;
 					if (i == 6)
 					{
@@ -115,6 +117,7 @@ int main(int argc, char *argv[])
 					}
 
 					/*start count*/
+
 					for (int j = 0; j < 7; j++)
 					{
 						if (Lotto_temp == Lotto1[j])
@@ -170,27 +173,32 @@ int main(int argc, char *argv[])
 					}
 					/*end count*/
 				}
-				//send(hSocket, (char*)&LottoCount1, sizeof(LottoCount1), 0);
 				LottoPrn();
-				printf("A. 당첨 개수 : %d개\n", LottoCount1);
-				printf("B. 당첨 개수 : %d개\n", LottoCount2);
-				printf("C. 당첨 개수 : %d개\n", LottoCount3);
-				printf("D. 당첨 개수 : %d개\n", LottoCount4);
-				printf("E. 당첨 개수 : %d개\n", LottoCount5);
-				
+				printf("===========================\n");
+				printf("==========최종등수=========\n");
+				printf("===========================\n");
+				printf("A :");
+				LottoGrade(LottoCount1, Lotto1[7]);
+				printf("B :");
+				LottoGrade(LottoCount2, Lotto2[7]);
+				printf("C :");
+				LottoGrade(LottoCount3, Lotto3[7]);
+				printf("D :");
+				LottoGrade(LottoCount4, Lotto4[7]);
+				printf("E :");
+				LottoGrade(LottoCount5, Lotto5[7]);
+
 				EnterCheck = false;
 			}
-			
-			//등수 추첨
-			//send(hSocket, (char*)&Number_Lotto[i], sizeof(Number_Lotto[i]), 0);
 			break;
 		}
-		
-		else if (M_input == 2)	//수동배치
+		//수동
+		else if (M_input == 2)
 		{
 			system("cls");
 			printf("로또 숫자를 배치하세요 !!\n");
 		}
+
 		else	//그외의 숫자들
 		{
 			printf("숫자를 잘못 입력하셨습니다.\n");
@@ -212,7 +220,22 @@ void ErrorHandling(char * message)
 	fputc('\n', stderr);	
 	exit(1);				
 }
-
+void LottoGrade(int LottoNumber, int Bonus)
+{
+	if (LottoNumber == 6)
+		printf("1등\n");
+	else if (LottoNumber == 5 && Bonus == 1)
+		printf("2등\n");
+	else if (LottoNumber == 5)
+		printf("3등\n");
+	else if (LottoNumber == 4)
+		printf("4등\n");
+	else if (LottoNumber == 3)
+		printf("5등\n");
+	else
+		printf("순위권 외\n");
+		
+}
 void LottoShuffle(int Number_Lotto[45])
 {
 	int num1, num2, temp;
@@ -223,7 +246,7 @@ void LottoShuffle(int Number_Lotto[45])
 	}
 
 	//셔플 
-	for (int i = 0; i < 100; i++)
+	for (int i = 0; i < 500; i++)
 	{
 		num1 = rand() % 45;
 		num2 = rand() % 45;
