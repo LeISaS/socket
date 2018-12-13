@@ -69,6 +69,7 @@ int main(int argc, char *argv[])
 		int boolTwo=1;
 		int Count1, Count2, Count3, Count4, Count5;
 		int Count_temp1, Count_temp2, Count_temp3, Count_temp4, Count_temp5;
+		int N_Complete;
 		
 	//Logic
 		while (1)
@@ -83,8 +84,9 @@ int main(int argc, char *argv[])
 			if (temp == 1)
 			{
 				printf("클라이언트에서 %d번 입력했습니다.\n", temp);
+				printf("--------------자동배치-----------\n");
 				printf("자동배치를 시작합니다.\n");
-				Sleep(1000);
+				Sleep(3000);
 				printf("자동배치를 완료했습니다.\n");
 				printf("숫자추첨을 시작합니다.\n");
 				//enter
@@ -109,8 +111,29 @@ int main(int argc, char *argv[])
 			else if (temp == 2)
 			{
 				printf("클라이언트에서 %d번 입력했습니다.\n", temp);
+				printf("------------수동배치-------------\n");
+				recv(hClntSock, (char *)&N_Complete, sizeof(N_Complete), 0);
+				if (N_Complete==1);
+				{
+					printf("숫자 배치 완료 ");
+				}
+				
+				for (int i = 0; i < 7; i++)
+				{
+					recv(hClntSock, (char *)&booltemp, sizeof(booltemp), 0);
+					if (booltemp == 1)
+					{
+						recv(hClntSock, (char *)&Enter_temp, sizeof(Enter_temp), 0);
+						printf("%d...클라이언트로부터 엔터를 입력받았습니다.%c\n", i + 1, Enter_temp);
+						printf("추첨된 번호를 클라이언트로 보냈습니다.\n");
+						LottoShuffle();
+					}
+					else
+						continue;
+				}
+				printf("번호 추첨끝 클라이언트에서 등수확인을 합니다\n");
+				Sleep(1000);
 			}
-			
 			else
 			{
 				printf("메뉴에 없는 숫자를 입력했습니다..\n");
@@ -166,9 +189,4 @@ void LottoShuffle()
 		send(hClntSock, (char*)&Number_Lotto[i], sizeof(Number_Lotto[i]), 0);
 	}
 	printf("\n");
-}
-
-void Lottograde(int Number)
-{
-
 }

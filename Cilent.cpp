@@ -25,7 +25,8 @@ SOCKET hSocket;
 void AutoLotto();
 void LottoPrn();
 void LottoGrade(int LottoNuber, int Bonus);
-int Lotto1[8] = {}, Lotto2[8] = {}, Lotto3[8] = {}, Lotto4[8] = {}, Lotto5[8] = {};
+void manual();
+int Lotto1[8] = {0,}, Lotto2[8] = {0,}, Lotto3[8] = {0,}, Lotto4[8] = {0,}, Lotto5[8] = {0,};
 int main(int argc, char *argv[])
 {
 	srand((unsigned)time(NULL));
@@ -79,11 +80,9 @@ int main(int argc, char *argv[])
 			printf("자동으로 로또 숫자를 배치합니다.\n");
 
 			AutoLotto();
-			
-			printf("로또 번호 생성 완료\n");
-			printf("엔터키를 눌러주세요 !\n");
+
 			//enter
-			if (EnterCheck == true)
+			if (EnterCheck)
 			{
 				for (int i = 0; i < 7; i++)
 				{					
@@ -95,8 +94,10 @@ int main(int argc, char *argv[])
 					getchar();
 					send(hSocket, (char*)&Enter, sizeof(Enter), 0);
 					
+					/*최종 번호*/
 					recv(hSocket, (char *)&Lotto_temp, sizeof(Lotto_temp), 0);
 					Lotto_ins[i] = Lotto_temp;
+					/*최종 번호*/
 					if (i == 6)
 					{
 						arrayCount = Lotto_temp;
@@ -174,6 +175,7 @@ int main(int argc, char *argv[])
 					/*end count*/
 				}
 				LottoPrn();
+				Sleep(1000);
 				printf("===========================\n");
 				printf("==========최종등수=========\n");
 				printf("===========================\n");
@@ -197,6 +199,120 @@ int main(int argc, char *argv[])
 		{
 			system("cls");
 			printf("로또 숫자를 배치하세요 !!\n");
+			
+			//수동입력
+			manual();
+
+			printf("--------로또 번호 입력완료 \n------");
+			Sleep(2000);
+			if (EnterCheck)
+			{
+				for (int i = 0; i < 7; i++)
+				{
+					LottoPrn();
+
+					int boolOne = 1;
+					send(hSocket, (char *)&boolOne, sizeof(boolOne), 0);
+					getchar();
+					send(hSocket, (char *)&Enter, sizeof(Enter), 0);
+					/*최종 번호*/
+					recv(hSocket, (char *)&Lotto_temp, sizeof(Lotto_temp), 0);
+					Lotto_ins[i] = Lotto_temp;
+					/*최종 번호*/
+					if (i == 6)
+					{
+						arrayCount = Lotto_temp;
+						system("cls");
+						printf("\n보너스 추첨 번호 : %d\n", Lotto_temp);
+
+						printf("-------Result------\n");
+						printf("최종 번호\n");
+						for (int j = 0; j < 7; j++)
+							printf("\t%d", Lotto_ins[j]);
+						printf("\n");
+					}
+					else
+					{
+						system("cls");
+						printf("\n%d번째 추첨 번호 : %d\n", i + 1, Lotto_temp);
+
+					}
+					/*start count*/
+
+					for (int j = 0; j < 7; j++)
+					{
+						if (Lotto_temp == Lotto1[j])
+						{
+							Lotto1[6]++;
+							LottoCount1++;
+							if (arrayCount == Lotto1[j])
+							{
+								Lotto1[6]--;
+								Lotto1[7]++;
+							}
+						}
+						if (Lotto_temp == Lotto2[j])
+						{
+							Lotto2[6]++;
+							LottoCount2++;
+							if (arrayCount == Lotto2[j])
+							{
+								Lotto2[6]--;
+								Lotto2[7]++;
+							}
+						}
+						if (Lotto_temp == Lotto3[j])
+						{
+							Lotto3[6]++;
+							LottoCount3++;
+							if (arrayCount == Lotto3[j])
+							{
+								Lotto3[6]--;
+								Lotto3[7]++;
+							}
+						}
+						if (Lotto_temp == Lotto4[j])
+						{
+							Lotto4[6]++;
+							LottoCount4++;
+							if (arrayCount == Lotto4[j])
+							{
+								Lotto4[6]--;
+								Lotto4[7]++;
+							}
+						}
+						if (Lotto_temp == Lotto5[j])
+						{
+							Lotto5[6]++;
+							LottoCount5++;
+							if (arrayCount == Lotto5[j])
+							{
+								Lotto5[6]--;
+								Lotto5[7]++;
+							}
+						}
+					}
+					/*end count*/
+				}
+				LottoPrn();
+				Sleep(1000);
+				printf("===========================\n");
+				printf("==========최종등수=========\n");
+				printf("===========================\n");
+				printf("A :");
+				LottoGrade(LottoCount1, Lotto1[7]);
+				printf("B :");
+				LottoGrade(LottoCount2, Lotto2[7]);
+				printf("C :");
+				LottoGrade(LottoCount3, Lotto3[7]);
+				printf("D :");
+				LottoGrade(LottoCount4, Lotto4[7]);
+				printf("E :");
+				LottoGrade(LottoCount5, Lotto5[7]);
+
+				EnterCheck = false;
+			}
+			break;
 		}
 
 		else	//그외의 숫자들
@@ -233,7 +349,7 @@ void LottoGrade(int LottoNumber, int Bonus)
 	else if (LottoNumber == 3)
 		printf("5등\n");
 	else
-		printf("순위권 외\n");
+		printf("꽝\n");
 		
 }
 void LottoShuffle(int Number_Lotto[45])
@@ -246,7 +362,7 @@ void LottoShuffle(int Number_Lotto[45])
 	}
 
 	//셔플 
-	for (int i = 0; i < 500; i++)
+	for (int i = 0; i < 250; i++)
 	{
 		num1 = rand() % 45;
 		num2 = rand() % 45;
@@ -269,12 +385,12 @@ void LottoShuffle(int Number_Lotto[45])
 			}
 		}
 	}
-	for (int i = 0; i < 7; i++)
+	for (int i = 0; i < 8; i++)
 	{
 		Number_Lotto[7] = 0;
 		Number_Lotto[6] = 0;
 		printf("%d\t", Number_Lotto[i]);
-		Sleep(20);
+		Sleep(50);
 		//send(hSocket, (char*)&Number_Lotto[i], sizeof(Number_Lotto[i]), 0);
 	}
 	printf("\n");
@@ -317,4 +433,98 @@ void AutoLotto()
 		LottoShuffle(&Lotto4[i]);
 	for (int i = 0; i<1; i++)
 		LottoShuffle(&Lotto5[i]);
+}
+
+//수동
+void LottoRange(int Number_Lotto[45])
+{
+	int temp;
+	for (int i = 0; i < 6; i++)
+	{
+		for (int j = 0; j < 6; j++)
+		{
+			if (Number_Lotto[i] < Number_Lotto[j])
+			{
+				temp = Number_Lotto[i];
+				Number_Lotto[i] = Number_Lotto[j];
+				Number_Lotto[j] = temp;
+			}
+		}
+	}
+}
+void manual()
+{
+	printf("한 라인당 숫자 6개(0~45의 숫자)를 입력합니다.\n");
+	printf("A : ");
+	for (int i = 0; i < 6; i++)
+	{
+		Lotto1[6] = 0;
+		Lotto1[7] = 0;
+		scanf("%d", &Lotto1[i]);
+		if (Lotto1[i] <= 0 || Lotto1[i] >= 46)
+		{
+			i--;
+			printf("0~45사이의 숫자를 입력해주세요\n");
+			continue;
+		}
+	}
+	printf("B : ");
+	for (int i = 0; i < 6; i++)
+	{
+		Lotto2[6] = 0;
+		Lotto2[7] = 0;
+		scanf("%d", &Lotto2[i]);
+		if (Lotto2[i] <= 0 || Lotto2[i] >= 46)
+		{
+			i--;
+			printf("0~45사이의 숫자를 입력해주세요\n");
+			continue;
+		}
+	}
+	printf("C : ");
+	for (int i = 0; i < 6; i++)
+	{
+		Lotto3[6] = 0;
+		Lotto3[7] = 0;
+		scanf("%d", &Lotto3[i]);
+		if (Lotto3[i] <= 0 || Lotto3[i] >= 46)
+		{
+			i--;
+			printf("0~45사이의 숫자를 입력해주세요\n");
+			continue;
+		}
+	}
+	printf("D : ");
+	for (int i = 0; i < 6; i++)
+	{
+		Lotto4[6] = 0;
+		Lotto4[7] = 0;
+		scanf("%d", &Lotto4[i]);
+		if (Lotto4[i] <= 0 || Lotto4[i] >= 46)
+		{
+			i--;
+			printf("0~45사이의 숫자를 입력해주세요\n");
+			continue;
+		}
+	}
+	printf("E : ");
+	for (int i = 0; i < 6; i++)
+	{
+		Lotto5[6] = 0;
+		Lotto5[7] = 0;
+		scanf("%d", &Lotto5[i]);
+		if (Lotto5[i] <= 0 || Lotto5[i] >= 46)
+		{
+			i--;
+			printf("0~45사이의 숫자를 입력해주세요\n");
+			continue;
+		}
+	}
+	LottoRange(Lotto1);
+	LottoRange(Lotto2);
+	LottoRange(Lotto3);
+	LottoRange(Lotto4);
+	LottoRange(Lotto5);
+	int a = 1;
+	send(hSocket, (char *)&a, sizeof(a), 0);
 }
